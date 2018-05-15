@@ -1,0 +1,38 @@
+{
+  "name": "hyper-media-control-gpmdp",
+  "version": "1.0.0",
+  "description": "Extends hyper-media-control with support for Google Play Music Desktop Player (Unofficial).",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "standard ./src/**.js | snazzy",
+    "prebuild": "npm run lint && rimraf ./dist",
+    "build": "babel src -d dist",
+    "prepublishonly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OrionNebula/hyper-media-control-gpmdp"
+  },
+  "keywords": [
+    "music",
+    "hyper-media-control",
+    "hyper",
+    "hyperterm",
+    "gpmdp",
+    "play-music"
+  ],
+  "author": "Olivia Trewin",
+  "license": "MIT",
+  "dependencies": {
+    "dialogs": "^1.1.20",
+    "hyper-plugin-extend": "1.0.0",
+    "ws": "^5.1.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "rimraf": "^2.6.2",
+    "snazzy": "^7.1.1",
+    "standard": "^11.0.1"
+  }
+}
