@@ -26,9 +26,14 @@ export class HyperMediaGpmdp extends EventEmitter {
         namespace: 'playback',
         method: 'playPause',
         arguments: []
-      }))
+      }), (err) => {
+        if (err) {
+          resolve(this.lastStatus = { isRunning: false })
+          return
+        }
 
-      resolve(this.lastStatus)
+        resolve(this.lastStatus)
+      })
     })
   }
 
@@ -38,9 +43,14 @@ export class HyperMediaGpmdp extends EventEmitter {
         namespace: 'playback',
         method: 'forward',
         arguments: []
-      }))
+      }), (err) => {
+        if (err) {
+          resolve(this.lastStatus = { isRunning: false })
+          return
+        }
 
-      resolve(this.lastStatus)
+        resolve(this.lastStatus)
+      })
     })
   }
 
@@ -50,9 +60,14 @@ export class HyperMediaGpmdp extends EventEmitter {
         namespace: 'playback',
         method: 'rewind',
         arguments: []
-      }))
+      }), (err) => {
+        if (err) {
+          resolve(this.lastStatus = { isRunning: false })
+          return
+        }
 
-      resolve(this.lastStatus)
+        resolve(this.lastStatus)
+      })
     })
   }
 
@@ -65,14 +80,17 @@ export class HyperMediaGpmdp extends EventEmitter {
       this.ws.send(JSON.stringify({
         namespace: 'connect',
         method: 'connect',
-        arguments: ['hyper-media-gpmdp', window.localStorage.getItem('hyper-media-control-gpmdp-code')]
-      }))
+        arguments: ['GPMDP control for Hyper', window.localStorage.getItem('hyper-media-control-gpmdp-code')]
+      }), (err) => {
+        if (err) {
+          this.emit('status', this.lastStatus = { isRunning: false })
+        }
+      })
     })
 
     this.ws.on('message', event => this.emit('status', this.composeStatus(JSON.parse(event))))
     this.ws.on('close', (code, reason) => {
-      this.lastStatus = { isRunning: false }
-      this.emit('status', this.lastStatus)
+      this.emit('status', this.lastStatus = { isRunning: false })
       setTimeout(() => {
         this.deactivate()
         this.activate()
@@ -88,8 +106,10 @@ export class HyperMediaGpmdp extends EventEmitter {
   }
 
   deactivate () {
-    this.ws.removeAllListeners()
-    if (this.ws.readyState === this.ws.OPEN) this.ws.close()
+    if (this.ws) {
+      this.ws.removeAllListeners()
+      if (this.ws.readyState === this.ws.OPEN) this.ws.close()
+    }
     this.ws = undefined
   }
 
@@ -103,7 +123,12 @@ export class HyperMediaGpmdp extends EventEmitter {
               namespace: 'connect',
               method: 'connect',
               arguments: [ 'hyper-media-control-gpmdp', response ]
-            }))
+            }), (err) => {
+              if (err) {
+                this.lastStatus = { isRunning: false }
+                this.emit('status', this.lastStatus)
+              }
+            })
           })
           break
         } else {
@@ -112,7 +137,12 @@ export class HyperMediaGpmdp extends EventEmitter {
             namespace: 'connect',
             method: 'connect',
             arguments: [ 'hyper-media-control-gpmdp', event.payload ]
-          }))
+          }), (err) => {
+            if (err) {
+              this.lastStatus = { isRunning: false }
+              this.emit('status', this.lastStatus)
+            }
+          })
         }
         break
       case 'track':

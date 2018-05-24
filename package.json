@@ -1,6 +1,6 @@
 {
   "name": "hyper-media-control-gpmdp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Extends hyper-media-control with support for Google Play Music Desktop Player (Unofficial).",
   "main": "dist/index.js",
   "scripts": {
